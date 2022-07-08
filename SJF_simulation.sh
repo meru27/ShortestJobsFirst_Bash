@@ -2,110 +2,88 @@
 #shell que corre en nuestro script
 #funciones
 exec 2> /dev/null
-if test -e informe.txt
-then
-	cat informe.txt > informeanterior.txt;
-	rm informe.txt
-fi
-if test -e informeblanco.txt
-then
-	cat informeblanco.txt > informeblancoanterior.txt;
-	rm informeblanco.txt
-fi
-if test -e sjf.temp
-then
-	rm sjf.temp;
-fi
 
-if test -e ejemplo.txt
-then
-	rm ejemplo.txt;
-fi
-printf '\e[8;50;150t'
-clear
-echo "############################################################"
-echo "#                     Creative Commons                     #"
-echo "#                                                          #"
-echo "#                   BY - Atribución (BY)                   #"
-echo "#                 NC - No uso Comercial (NC)               #"
-echo "#                SA - Compartir Igual (SA)                 #"
-echo "############################################################"
-echo "############################################################" > informeSJF.txt
-echo "#                     Creative Commons                     #" >> informeSJF.txt
-echo "#                                                          #" >> informeSJF.txt
-echo "#                   BY - Atribución (BY)                   #" >> informeSJF.txt
-echo "#                 NC - No uso Comercial (NC)               #" >> informeSJF.txt
-echo "#                SA - Compartir Igual (SA)                 #" >> informeSJF.txt
-echo "############################################################" >> informeSJF.txt
-
-echo ""
-echo >> informeSJF.txt
-
-echo "#######################################################################" >> informeSJF.txt
-echo "#                                                                     #" >> informeSJF.txt
-echo "#                         INFORME DE PRÁCTICA                         #" >> informeSJF.txt
-echo "#                         GESTIÓN DE PROCESOS                         #" >> informeSJF.txt
-echo "#             -------------------------------------------             #" >> informeSJF.txt
-echo "#                                                                     #" >> informeSJF.txt
-echo "#     Alumnos: Daniel Meruelo Monzón                                  #" >> informeSJF.txt
-echo "#     Sistemas Operativos 2º Semestre                                 #" >> informeSJF.txt
-echo "#     Versión:    Junio 2019                                         #" >> informeSJF.txt
-echo "#     Grado en ingeniería informática (2018-2019)                     #" >> informeSJF.txt
-echo "#                                                                     #" >> informeSJF.txt
-echo "#######################################################################" >> informeSJF.txt
-echo "" >> informeSJF.txt
-
-echo -e "\033[1;34m#######################################################################\033[0m"
-echo -e "\033[1;34m#                                                                     #\033[0m"
-echo -e "\033[1;34m#                         INFORME DE PRÁCTICA                         #\033[0m"
-echo -e "\033[1;34m#                         GESTIÓN DE PROCESOS                         #\033[0m"
-echo -e "\033[1;34m#             -------------------------------------------             #\033[0m"
-echo -e "\033[1;34m#                                                                     #\033[0m"
-echo -e "\033[1;34m#     Alumnos: Daniel Meruelo Monzón                                  #\033[0m"
-echo -e "\033[1;34m#     Sistemas Operativos 2º Semestre                                 #\033[0m"
-echo -e "\033[1;34m#     Versión:   Junio 2019                                           #\033[0m"
-echo -e "\033[1;34m#     Grado en ingeniería informática (2018-2019)                     #\033[0m"
-echo -e "\033[1;34m#                                                                     #\033[0m"
-echo -e "\033[1;34m#######################################################################\033[0m"
-echo ""
-
-echo "" > ejemplo.txt
-
-#cabecera del algoritmo en el que nos encontramos
-echo -e "Algoritmo SJF"
-echo -e "Daniel Meruelo Monzón"
-echo -e "Versión Junio 2019"
-
-
-#función que comprueba que un nombre es correcto
-Comprobarn(){
-	palabra=$(echo $1 $2 | wc -w); #cuento las lineas
-	if [ $palabra -ne 1 ]  #si es distinto pido otro nombre para el proceso
+initialChecks() {
+	if test ! -d output
 	then
-		echo "No se admiten espacios"
-		valido=1;
-	else
-		valido=0;
+		mkdir output
 	fi
 
-	if [ ${#1} -gt 7 ]
-	then
-		echo "Nombre demasiado largo"
-		valido=1
+	if test ! -d input
+	then 
+		mkdir input
+		touch input/datosEntrada.txt
+		echo '10,15,5' > input/datosEntrada.txt
+		echo 'Tiempo_de_llegada,tiempo_de_ejecucion,tamaño_en_memoria' >> input/datosEntrada.txt
+		echo '3,3,11' 	>> input/datosEntrada.txt
+		echo '4,2,9'	>> input/datosEntrada.txt
+		echo '4,3,4'	>> input/datosEntrada.txt
 	fi
 
-	if [ ! -z $hola ]
-	then
-		echo "Nombre vacío"
-		valido=1
+	if test ! -d temp
+	then 
+		mkdir temp
 	fi
 
-	if [ $valido -eq 1 ]
+	if test -e output/informe.txt
 	then
-		echo "Vuelva a introducir el nombre"
+		cat  output/informe.txt > output/informeanterior.txt;
+		rm  output/informe.txt
 	fi
-	return $valido
+	if test -e output/informeblanco.txt
+	then
+		cat output/informeblanco.txt > output/informeblancoanterior.txt;
+		rm output/informeblanco.txt
+	fi
+	if test -e temp/sjf.temp
+	then
+		rm temp/sjf.temp;
+	fi
+
+	if test -e temp/ejemplo.txt
+	then
+		rm temp/ejemplo.txt;
+	fi
+	printf '\e[8;50;150t'
+	clear
 }
+
+printCC() {
+	echo "############################################################"
+	echo "#                     Creative Commons                     #"
+	echo "#                                                          #"
+	echo "#                   BY - Atribución (BY)                   #"
+	echo "#                 NC - No uso Comercial (NC)               #"
+	echo "#                SA - Compartir Igual (SA)                 #"
+	echo "############################################################"
+	echo ""
+}
+
+printHeader() {
+	echo  "#######################################################################"
+	echo  "#                                                                     #"
+	echo  "#                         INFORME DE PRÁCTICA                         #"
+	echo  "#                         GESTIÓN DE PROCESOS                         #"
+	echo  "#             -------------------------------------------             #"
+	echo  "#                                                                     #"
+	echo  "#     Alumnos: Daniel Meruelo Monzón                                  #"
+	echo  "#     Sistemas Operativos 2º Semestre                                 #"
+	echo  "#     Versión:   Julio 2022                                           #"
+	echo  "#     Grado en ingeniería informática (2018-2019)                     #"
+	echo  "#                                                                     #"
+	echo  "#######################################################################"
+	echo ""
+	
+}
+
+initialChecks
+printCC
+printCC > temp/informeSJF.txt
+printHeader
+printHeader >> temp/informeSJF.txt
+
+echo "" > temp/ejemplo.txt
+
 
 # Nos permite saber si el parámetro pasado es entero positivo.
 #Devuelve 0 cuando es entero, 1 cuando es negativo y 2 cuando es decimal
@@ -123,33 +101,6 @@ es_enteropositivo() {
 		entero=$(expr $entero + 1)
     fi
     return "$entero"
-}
-
-#función que comprueba que los nombres introducidos para los procesos no sean iguales
-CompruebaNombre() {
-	correcto=0;
-	for(( z=1 ; z <= ${#proceso[@]} ; z++ )){
-		contador=0;
-		valor=${proceso[$z]};
-		for(( j=1 ; j<= ${#proceso[@]} ; j++ )){
-			valor2=${proceso[$j]};
-			if [ "$valor" == "$valor2" ] #si los valores del vector coinciden
-			then
-					contador=`expr $contador + 1`;
-			fi
-			if [ "$contador" -gt 1 ] #si el contador es mayor que uno
-			then
-				correcto=1; #Valor de la variable a 1 para un valor mal introducido
-			else
-				correcto=0; #Valor de la variable a 0 para un valor introducido
-			fi
-		}
-	}
-	if [ $correcto -eq 1 ]
-	then
-		echo "Nombre repetido"
-	fi
-	return $correcto
 }
 
 #Comprueba introducción automatica
@@ -219,14 +170,14 @@ color[4]=$violeta
 color[5]=$cian
 color[6]=$amarillo
 
-echo "" > terminal.txt
-echo "" >> informeSJF.txt
-echo "" > sjf.tmp
+echo "" > temp/terminal.txt
+echo "" >> temp/informeSJF.txt
+echo "" > temp/sjf.tmp
 
 fuera="s"
 while [ $fuera == "s" ] #mientras que contador sea menor que cantidad de procesos
 do
-	echo "" > sjf.tmp
+	echo "" > temp/sjf.tmp
 	echo "Empieza la introducción de datos"
 	if [ $p = 1 ]
 	then
@@ -242,18 +193,18 @@ do
 	fi
 
 
-	if [ "$op" = "n" ] #Introducción de datos automática
+if [ "$op" = "n" ] #Introducción de datos automática
 	then
-		if [ -e datosEntrada.txt ]
+		if [ -e input/datosEntrada.txt ]
 		then
 			menos=0
 			echo "Introduciendo el tamaño de las particiones..."
-			npart=`sed -n 1p datosEntrada.txt | tr ',' ' ' | wc -w`
+			npart=`sed -n 1p input/datosEntrada.txt | tr ',' ' ' | wc -w`
 			x=0
 			echo "hay $npart particiones antes de introducirlas"
 			for ((i=0;i<$npart;i++)){
 				q=$(expr $i + 1)
-				part=$(sed -n 1p datosEntrada.txt | cut -d "," -f $q)
+				part=$(sed -n 1p input/datosEntrada.txt | cut -d "," -f $q)
 				if ! es_entero $part
 				then
 					echo "No se ha podido introducir la partición número $i"
@@ -266,7 +217,7 @@ do
 			}
 			pasar=1
 			npart=$x
-	    	echo "El numero de particiones es $x" >> ejemplo.txt
+	    	echo "El numero de particiones es $x" >> temp/ejemplo.txt
 	    	echo "El numero de particiones es $x"
 	    	max=0
 			for ((i=0;i<$npart;i++)){	#convierte $max en el tamaño de la partición más grande
@@ -279,23 +230,23 @@ do
 			echo "Introduciendo los procesos..."
 			menos=0
 			nomPro=" "
-			npro=$(cat datosEntrada.txt | tr '\n' ' ' | wc -w)
+			npro=$(cat input/datosEntrada.txt | tr '\n' ' ' | wc -w)
 			npro=$(( $npro-2 ))
 			x=1
-			echo "Numero de procesos de datosEntrada.txt: $npro"
-			for((i=3;i<=`expr $npro + 2`;i++)){	#Introducción de valores desde datosEntrada.txt a sus correspondientes variables
+			echo "Numero de procesos de input/datosEntrada.txt: $npro"
+			for((i=3;i<=`expr $npro + 2`;i++)){	#Introducción de valores desde input/datosEntrada.txt a sus correspondientes variables
 				process=$(( $i-2 ))				
 				if [ $process -lt 10 ]; then
     				nomPro="P0$process"
 				else 
 				nomPro="P$process"
 				fi
-				if es_entero `cat datosEntrada.txt | tr '\n' ' ' | cut -d ' ' -f $i | cut -d ',' -f 1` && es_enteropositivo `cat datosEntrada.txt | tr '\n' ' ' | cut -d ' ' -f $i | cut -d ',' -f 2` && es_enteropositivo `cat datosEntrada.txt | tr '\n' ' ' | cut -d ' ' -f $i | cut -d ',' -f 3` && [ `cat datosEntrada.txt | tr '\n' ' ' | cut -d ' ' -f $i | cut -d ',' -f 3` -le $max ]
+				if es_entero `cat input/datosEntrada.txt | tr '\n' ' ' | cut -d ' ' -f $i | cut -d ',' -f 1` && es_enteropositivo `cat input/datosEntrada.txt | tr '\n' ' ' | cut -d ' ' -f $i | cut -d ',' -f 2` && es_enteropositivo `cat input/datosEntrada.txt | tr '\n' ' ' | cut -d ' ' -f $i | cut -d ',' -f 3` && [ `cat input/datosEntrada.txt | tr '\n' ' ' | cut -d ' ' -f $i | cut -d ',' -f 3` -le $max ]
 				then
 					proceso[$x]="$nomPro"
-					llegada[$x]=$(cat datosEntrada.txt | tr '\n' ' ' | cut -d ' ' -f $i | cut -d ',' -f 1)
-					tiempo[$x]=$(cat datosEntrada.txt | tr '\n' ' ' | cut -d ' ' -f $i | cut -d ',' -f 2)
-					tamanoMemoria[$x]=$(cat datosEntrada.txt | tr '\n' ' ' | cut -d ' ' -f $i | cut -d ',' -f 3)
+					llegada[$x]=$(cat input/datosEntrada.txt | tr '\n' ' ' | cut -d ' ' -f $i | cut -d ',' -f 1)
+					tiempo[$x]=$(cat input/datosEntrada.txt | tr '\n' ' ' | cut -d ' ' -f $i | cut -d ',' -f 2)
+					tamanoMemoria[$x]=$(cat input/datosEntrada.txt | tr '\n' ' ' | cut -d ' ' -f $i | cut -d ',' -f 3)
 					estado[$x]=0
 					x=`expr $x + 1`
 				else
@@ -304,19 +255,10 @@ do
 				fi
 			}
 			npro=`expr $npro - $menos`
-			echo -e "\033[0;32mSe han introducido $npro procesos\033[0m"
-			
-
-
-		
-	
-			
-		
+			echo -e "\033[0;32mSe han introducido $npro procesos\033[0m"	
 		else
-			echo "No se encuentra el archivo 'datosEntrada.txt'"
+			echo "No se encuentra el archivo 'input/datosEntrada.txt'"
 		fi
-		
-		
 		
 		echo "Fin de introducción de datos..."
 		break
@@ -340,7 +282,6 @@ do
 								read "sn"
 								if [ $sn = "n" ]; then
 								outer=0
-
 								fi
 		     		done
 
@@ -354,8 +295,8 @@ do
 			}
 
 			for ((i=0;i<$npart;++i)){ #Escribe en el informe el tamaño de las particiones
-				echo "La particion $i tiene de tamaño: ${particiones[$i]}" >> informeSJF.txt
-				#echo "La particion $i tiene de tamaño: ${particiones[$i]}" >> ejemplo.txt
+				echo "La particion $i tiene de tamaño: ${particiones[$i]}" >> temp/informeSJF.txt
+				#echo "La particion $i tiene de tamaño: ${particiones[$i]}" >> temp/ejemplo.txt
 			}
 			pasar=1
 		fi
@@ -364,16 +305,16 @@ do
 
 		echo "Introducción de datos de procesos"
 		if [[ ${#p} -lt 2 ]] ; then
-    p="0${p}"
+    	p="0${p}"
 		fi
 
 
 		proceso[10#$p]="P$p"
-	  echo "Introducción de datos de procesos"
-		echo -n "	Nombre: P$p"  >> sjf.tmp
+	  	echo "Introducción de datos de procesos"
+		echo -n "	Nombre: P$p"  >> temp/sjf.tmp
 		clear
-		cat terminal.txt
-		cat sjf.tmp
+		cat temp/terminal.txt
+		cat temp/sjf.tmp
 		echo ""
 		echo ""
 		echo "Tiempo De llegada de P$p:"
@@ -388,10 +329,10 @@ do
 		
 		llegada[10#$p]=$llegad;   #añado al vector el tiempo de llegada
 
-		echo -n "	Llegada: $llegad"  >> sjf.tmp
+		echo -n "	Llegada: $llegad"  >> temp/sjf.tmp
 		clear
-		cat terminal.txt
-		cat sjf.tmp
+		cat temp/terminal.txt
+		cat temp/sjf.tmp
 
 		echo ""
 		echo ""
@@ -406,10 +347,10 @@ do
 
 		tiempo[10#$p]=$tiemp;   #añado al vector el tiempo de ejecución
 
-		echo -n "	Tiempo de ejec.: $tiemp"  >> sjf.tmp
+		echo -n "	Tiempo de ejec.: $tiemp"  >> temp/sjf.tmp
 		clear
-		cat terminal.txt
-		cat sjf.tmp
+		cat temp/terminal.txt
+		cat temp/sjf.tmp
 
 		echo ""
 		echo ""
@@ -434,17 +375,17 @@ do
 
 		estado[10#$p]=0
 
-		echo -n "	Tamaño: $tamano"  >> sjf.tmp
+		echo -n "	Tamaño: $tamano"  >> temp/sjf.tmp
 		clear
-		cat terminal.txt
-		cat sjf.tmp
+		cat temp/terminal.txt
+		cat temp/sjf.tmp
 
 	fi
 	p=`expr $p + 1` #incremento el contador
 	pp=`expr $pp + 1` #incremento el contador
 
-	echo "" >> informeSJF.txt
-	echo "" >>ejemplo.txt
+	echo "" >> temp/informeSJF.txt
+	echo "" >> temp/ejemplo.txt
 
 	tam=${#llegada[@]}
 
@@ -483,53 +424,53 @@ do
 			 if [ $i -eq 1 ]
 			 then
 
-				 echo -e "\t  ${naranja}P  ${naranja}TLL ${naranja}TEJ ${naranja}TAM ${naranja}Estado" >> ejemplo.txt
+				 echo -e "\t  ${naranja}P  ${naranja}TLL ${naranja}TEJ ${naranja}TAM ${naranja}Estado" >> temp/ejemplo.txt
 
 			 fi
-			echo -en "\t ${color[(i % 7)]}${proceso[$i]} " >> ejemplo.txt
+			echo -en "\t ${color[(i % 7)]}${proceso[$i]} " >> temp/ejemplo.txt
 			if [ ${llegada[$i]} -lt 10 ]; then
-				echo -en " ${color[(i % 7)]}${llegada[$i]}  " >> ejemplo.txt
-			else    echo -en " ${color[(i % 7)]}${llegada[$i]} " >> ejemplo.txt
+				echo -en " ${color[(i % 7)]}${llegada[$i]}  " >> temp/ejemplo.txt
+			else    echo -en " ${color[(i % 7)]}${llegada[$i]} " >> temp/ejemplo.txt
 			fi
 			if [ ${tiempo[$i]} -lt 10 ]; then
-				echo -en " ${color[(i % 7)]}${tiempo[$i]}  " >> ejemplo.txt
-			else    echo -en " ${color[(i % 7)]}${tiempo[$i]} " >> ejemplo.txt
+				echo -en " ${color[(i % 7)]}${tiempo[$i]}  " >> temp/ejemplo.txt
+			else    echo -en " ${color[(i % 7)]}${tiempo[$i]} " >> temp/ejemplo.txt
 			fi
 			if [ ${tamanoMemoria[$i]} -lt 10 ]; then
-				echo -en " ${color[(i % 7)]}${tamanoMemoria[$i]}  " >> ejemplo.txt
-			else    echo -en " ${color[(i % 7)]}${tamanoMemoria[$i]} " >> ejemplo.txt
+				echo -en " ${color[(i % 7)]}${tamanoMemoria[$i]}  " >> temp/ejemplo.txt
+			else    echo -en " ${color[(i % 7)]}${tamanoMemoria[$i]} " >> temp/ejemplo.txt
 			fi
      
 			if [ ${estado[$i]} -eq 0 ]
 			then
 				if [ $t -ge ${llegada[$i]} ]
 				then
-					echo -ne "${color[(i % 7)]}En espera" >> ejemplo.txt
+					echo -ne "${color[(i % 7)]}En espera" >> temp/ejemplo.txt
 				else
-					echo -ne "${color[(i % 7)]}Fuera del sistema" >> ejemplo.txt
+					echo -ne "${color[(i % 7)]}Fuera del sistema" >> temp/ejemplo.txt
 				fi
 			elif [ ${estado[$i]} -eq 1 ]
 			then
-				echo -ne "${color[(i % 7)]}En memoria" >> ejemplo.txt
+				echo -ne "${color[(i % 7)]}En memoria" >> temp/ejemplo.txt
 			elif [ ${estado[$i]} -eq 2 ]
 			then
-				echo -ne "${color[(i % 7)]}En ejecución" >> ejemplo.txt
+				echo -ne "${color[(i % 7)]}En ejecución" >> temp/ejemplo.txt
 			else
-				echo -ne "${color[(i % 7)]}Terminado" >> ejemplo.txt
+				echo -ne "${color[(i % 7)]}Terminado" >> temp/ejemplo.txt
 			fi
-			echo -e "\t\t" >> ejemplo.txt
+			echo -e "\t\t" >> temp/ejemplo.txt
 
 			}
 
 		#promedios
-		echo "" >> ejemplo.txt
-		echo "" >> informeSJF.txt
-		echo -e "\e[0;31m * T.espera medio: $promedio_espera  -  * T.retorno medio: $promedio_respuesta \e[0m" >> ejemplo.txt
-		echo "" >> ejemplo.txt
-		cat ejemplo.txt
-		echo "" > terminal.txt
-		cp ejemplo.txt terminal.txt
-		echo "" > ejemplo.txt
+		echo "" >> temp/ejemplo.txt
+		echo "" >> temp/informeSJF.txt
+		echo -e "\e[0;31m * T.espera medio: $promedio_espera  -  * T.retorno medio: $promedio_respuesta \e[0m" >> temp/ejemplo.txt
+		echo "" >> temp/ejemplo.txt
+		cat temp/ejemplo.txt
+		echo "" > temp/terminal.txt
+		cp temp/ejemplo.txt temp/terminal.txt
+		echo "" > temp/ejemplo.txt
 
 		echo "¿Quieres introducir mas procesos? [s/n]:"
 		read fuera
@@ -542,16 +483,16 @@ do
 		npro=`expr $npro + 1`
 
 done #Cerraos while de introducción de datos
-touch datosentrada.txt
+touch temp/input.txt
 for((i=0; i<$npart; i++)){
-	echo -ne "${particiones[$i]}," >> datosentrada.txt
+	echo -ne "${particiones[$i]}," >> temp/input.txt
 }
-echo -e "\nTiempo_de_llegada,tiempo_de_ejecucion,tamaño_en_memoria" >> datosentrada.txt
+echo -e "\nTiempo_de_llegada,tiempo_de_ejecucion,tamaño_en_memoria" >> temp/input.txt
 for((i=1; i<=$npro; i++)){
-	echo -e "${llegada[$i]},${tiempo[$i]},${tamanoMemoria[$i]}" >> datosentrada.txt
+	echo -e "${llegada[$i]},${tiempo[$i]},${tamanoMemoria[$i]}" >> temp/input.txt
 }
-cat datosentrada.txt > datosEntrada.txt
-rm datosentrada.txt
+cat temp/input.txt > input/datosEntrada.txt
+rm temp/input.txt
 
 
 #Ordena el vector dependiendo del tiempo de llegada, de menos a mas
@@ -623,11 +564,11 @@ tamanew=();
 for((i=1;i<=$npro;i++)){
 	espacios=`expr 8 - ${#proceso[$i]}`
 	proceso[i]=${color[($i % 7)]}${proceso[i]}$blanco
-	echo -ne "${proceso[$i]}" > "${proceso[$i]}.tmp"
+	echo -ne "${proceso[$i]}" > "temp/${proceso[$i]}.tmp"
 	for((x=1;x<$espacios;x++)){
-		echo -ne " " >> "${proceso[$i]}.tmp"
+		echo -ne " " >> "temp/${proceso[$i]}.tmp"
 	}
-	echo -ne " " >> "${proceso[$i]}.tmp"
+	echo -ne " " >> "temp/${proceso[$i]}.tmp"
 	tamanew[$i]=${tamanoMemoria[$i]}
 	tEspera[$i]=0
 	tRetorno[$i]=0
@@ -636,39 +577,39 @@ for((i=1;i<=$npro;i++)){
 }
 
 #Se crean el principio de la gráfica de procesos
-echo  -e "\n	${naranja}Gráfica${blanco}" > cabecera.tmp
-echo -ne "TIEMPO" >> cabecera.tmp
+echo  -e "\n	${naranja}Gráfica${blanco}" > temp/cabecera.tmp
+echo -ne "TIEMPO" >> temp/cabecera.tmp
 for ((i=0;i<$npart;i++)){
 	partocup[$i]=0
 }
 #Creamos los archivos temporales de la tabla de particiones y la lineal
-echo -ne "        " > nombreP.tmp
+echo -ne "        " > temp/nombreP.tmp
 
 
 
-echo -ne "" > nombreP2.tmp
-echo -ne "	┌———————" > primeraP2.tmp
-echo -ne "	└———————" > ultimaP2.tmp
-echo -ne "       " > nombreL.tmp
-echo -ne "        " > primeraL.tmp
-echo -ne "        " > ultimaL.tmp
-echo -ne "       ${blanco}0" > tiempoL.tmp
-echo -ne "TIEMPO " > lineal.tmp
+echo -ne "" > temp/nombreP2.tmp
+echo -ne "	┌———————" > temp/primeraP2.tmp
+echo -ne "	└———————" > temp/ultimaP2.tmp
+echo -ne "       " > temp/nombreL.tmp
+echo -ne "        " > temp/primeraL.tmp
+echo -ne "        " > temp/ultimaL.tmp
+echo -ne "       ${blanco}0" > temp/tiempoL.tmp
+echo -ne "TIEMPO " > temp/lineal.tmp
 o=0
 for((i=0;i<$npart;i++)){
 	
 	exd=`expr $npart - 1`
 	if [ $exd -ne $i ]
 	then
-		echo -ne " " >> nombreP2.tmp
-		echo -ne "┬———————" >> primeraP2.tmp
-		echo -ne "┴———————" >> ultimaP2.tmp
+		echo -ne " " >> temp/nombreP2.tmp
+		echo -ne "┬———————" >> temp/primeraP2.tmp
+		echo -ne "┴———————" >> temp/ultimaP2.tmp
 		
 	fi
 }
 
-echo -ne "┘" >> ultimaP2.tmp
-echo -ne "┐" >> primeraP2.tmp
+echo -ne "┘" >> temp/ultimaP2.tmp
+echo -ne "┐" >> temp/primeraP2.tmp
 
 final=$npro
 h=0
@@ -683,7 +624,7 @@ nproo=`expr $npro + 1`
 centinela=0
 ocupadas=();
 imprimir=();
-echo -n "" > informe.txt
+echo -n "" >  output/informe.txt
 
 for((i=1;i<=$npro;i++)){
 	tamanoAnterior[$i]=${tamanoMemoria[$i]}
@@ -692,7 +633,7 @@ for((i=1;i<=$npro;i++)){
 }
 
 for ((t=0;t<=1000;++t)){
-	echo -e "\e[1;34mEstamos en el instante $t.\e[0m" > ejemplo.txt
+	echo -e "\e[1;34mEstamos en el instante $t.\e[0m" > temp/ejemplo.txt
 
 	for ((j=1;j<$nproo;++j)){
 		centinela=0
@@ -711,7 +652,7 @@ for ((t=0;t<=1000;++t)){
 							ocupadas[$k]=${proceso[$j]}
 							aux[$k]=$k
 							estado[$j]=1
-							echo -e "\e[1;32mEl proceso ${proceso[$j]}\e[1;32m se ha metido en la particion_$k y su tiempo de ejecucion es ${tiempo[$j]}.\e[0m" >> ejemplo.txt
+							echo -e "\e[1;32mEl proceso ${proceso[$j]}\e[1;32m se ha metido en la particion_$k y su tiempo de ejecucion es ${tiempo[$j]}.\e[0m" >> temp/ejemplo.txt
 							hayEvento=1
 							ejecutar[$z]=$k
 							z=`expr $z + 1`
@@ -737,12 +678,12 @@ for ((t=0;t<=1000;++t)){
 	}
 
 	#Creamos tabla de particiones
-	echo -e "\t\t" > graficaP.tmp
-	cat nombreP.tmp >> graficaP.tmp
-	echo -e "" >> graficaP.tmp
-	echo -n "" > porcentajeP.tmp
-	echo -ne "MEMORIA " > procesoP.tmp
-	echo -ne "        0" > ultimaP1.tmp
+	echo -e "\t\t" > temp/graficaP.tmp
+	cat temp/nombreP.tmp >> temp/graficaP.tmp
+	echo -e "" >> temp/graficaP.tmp
+	echo -n "" > temp/porcentajeP.tmp
+	echo -ne "MEMORIA " > temp/procesoP.tmp
+	echo -ne "        0" > temp/ultimaP1.tmp
 	for((i=0;i<$npart;i++)){
 			j=`expr $i - 1`		
 			if [ $i -eq 0 ]; then
@@ -755,33 +696,33 @@ for ((t=0;t<=1000;++t)){
 		then	
 			
 			for((o=0;o<${particiones[$i]};o++)){
-				echo -n "▇▇▇" >> procesoP.tmp
+				echo -n "▇▇▇" >> temp/procesoP.tmp
 			}
 			
 			if [ $i -eq 0 ]; then
 				for((o=0;o<`expr ${particiones[$i]}*3-2`;o++)){
-					echo -n " " >> ultimaP1.tmp
+					echo -n " " >> temp/ultimaP1.tmp
 				}
-				echo -ne "${tamfin[$i]}" >> ultimaP1.tmp
+				echo -ne "${tamfin[$i]}" >> temp/ultimaP1.tmp
 			else
 				if [ ${particiones[$j]} -lt 10 ]; then
 					for((o=0;o<`expr ${particiones[$i]}*3-1`;o++)){
-						echo -n " " >> ultimaP1.tmp
+						echo -n " " >> temp/ultimaP1.tmp
 					}
-					echo -ne "${tamfin[$i]}" >> ultimaP1.tmp
+					echo -ne "${tamfin[$i]}" >> temp/ultimaP1.tmp
 				else
 					for((o=0;o<`expr ${particiones[$i]}*3-2`;o++)){
-						echo -n " " >> ultimaP1.tmp
+						echo -n " " >> temp/ultimaP1.tmp
 					}
-					echo -ne "${tamfin[$i]}" >> ultimaP1.tmp
+					echo -ne "${tamfin[$i]}" >> temp/ultimaP1.tmp
 				fi
 			fi
 		else
 						
 				
-			echo -ne "${color[(${partocup[$i]} % 7)]}" >> procesoP.tmp
+			echo -ne "${color[(${partocup[$i]} % 7)]}" >> temp/procesoP.tmp
 			for((o=0;o<${tamanew[${partocup[$i]}]};o++)){
-				echo -ne "▇▇▇" >> procesoP.tmp	
+				echo -ne "▇▇▇" >> temp/procesoP.tmp	
 			}
 			
 			
@@ -804,87 +745,87 @@ for ((t=0;t<=1000;++t)){
 				tamfin[$i]=`expr ${tamfin[$j]} + ${particiones[$i]}`
 			fi
 
-			echo -ne "$blanco" >> procesoP.tmp
+			echo -ne "$blanco" >> temp/procesoP.tmp
 			for((o=0;o<$bucle;o++)){
-				echo -ne "▇▇▇" >> procesoP.tmp	
+				echo -ne "▇▇▇" >> temp/procesoP.tmp	
 			}
 			
 			
 			if [ $i -eq 0 ]; then
 				for((o=0;o<`expr ${tamanew[${partocup[$i]}]}*3-1`;o++)){
-					echo -ne " " >> ultimaP1.tmp
+					echo -ne " " >> temp/ultimaP1.tmp
 				}
-				echo -ne "$memm" >> ultimaP1.tmp
+				echo -ne "$memm" >> temp/ultimaP1.tmp
 				if [ $memm -lt 10 ]; then				
 				for((o=0;o<`expr $bucle*3-1`;o++)){
-					echo -ne " " >> ultimaP1.tmp
+					echo -ne " " >> temp/ultimaP1.tmp
 				}
-				echo -ne "${tamfin[$i]}" >> ultimaP1.tmp
+				echo -ne "${tamfin[$i]}" >> temp/ultimaP1.tmp
 				else
 				for((o=0;o<`expr $bucle*3-2`;o++)){
-					echo -ne " " >> ultimaP1.tmp
+					echo -ne " " >> temp/ultimaP1.tmp
 				}
-				echo -ne "${tamfin[$i]}" >> ultimaP1.tmp
+				echo -ne "${tamfin[$i]}" >> temp/ultimaP1.tmp
 				fi
 			else
 				if [ ${tamfin[$j]} -lt 10 ]; then
 					for((o=0;o<`expr ${tamanew[${partocup[$i]}]}*3-1`;o++)){
-					echo -ne " " >> ultimaP1.tmp
+					echo -ne " " >> temp/ultimaP1.tmp
 					}
-					echo -ne "$memm" >> ultimaP1.tmp
+					echo -ne "$memm" >> temp/ultimaP1.tmp
 					if [ $memm -lt 10 ]; then
 						for((o=0;o<`expr $bucle*3-1`;o++)){
-						echo -ne " " >> ultimaP1.tmp
+						echo -ne " " >> temp/ultimaP1.tmp
 						}
-						echo -ne "${tamfin[$i]}" >> ultimaP1.tmp
+						echo -ne "${tamfin[$i]}" >> temp/ultimaP1.tmp
 					else 
 						for((o=0;o<`expr $bucle*3-2`;o++)){
-						echo -ne " " >> ultimaP1.tmp
+						echo -ne " " >> temp/ultimaP1.tmp
 						}
-						echo -ne "${tamfin[$i]}" >> ultimaP1.tmp
+						echo -ne "${tamfin[$i]}" >> temp/ultimaP1.tmp
 					fi
 				else 
 					for((o=0;o<`expr ${tamanew[${partocup[$i]}]}*3-2`;o++)){
-					echo -ne " " >> ultimaP1.tmp
+					echo -ne " " >> temp/ultimaP1.tmp
 					}
-					echo -ne "$memm" >> ultimaP1.tmp
+					echo -ne "$memm" >> temp/ultimaP1.tmp
 					if [ $memm -lt 10 ]; then
 						for((o=0;o<`expr $bucle*3-1`;o++)){
-						echo -ne " " >> ultimaP1.tmp
+						echo -ne " " >> temp/ultimaP1.tmp
 						}
-						echo -ne "${tamfin[$i]}" >> ultimaP1.tmp
+						echo -ne "${tamfin[$i]}" >> temp/ultimaP1.tmp
 					else 
 						for((o=0;o<`expr $bucle*3-2`;o++)){
-						echo -ne " " >> ultimaP1.tmp
+						echo -ne " " >> temp/ultimaP1.tmp
 						}
-						echo -ne "${tamfin[$i]}" >> ultimaP1.tmp
+						echo -ne "${tamfin[$i]}" >> temp/ultimaP1.tmp
 					fi
 				fi	
 			fi		
 			
 			
 		fi
-		echo -n "" >> procesoP.tmp
+		echo -n "" >> temp/procesoP.tmp
 	}
-	cat procesoP.tmp >> graficaP.tmp
-	echo -e "" >> graficaP.tmp
-	cat ultimaP1.tmp >>graficaP.tmp
+	cat temp/procesoP.tmp >> temp/graficaP.tmp
+	echo -e "" >> temp/graficaP.tmp
+	cat temp/ultimaP1.tmp >>temp/graficaP.tmp
 	
 
 
-	cat nombreP2.tmp >> graficaP.tmp
-	echo -e "" >> graficaP.tmp
-	cat primeraP2.tmp >> graficaP.tmp
-	echo -e "" >> graficaP.tmp
-	echo -n "" > porcentajeP.tmp
+	cat temp/nombreP2.tmp >> temp/graficaP.tmp
+	echo -e "" >> temp/graficaP.tmp
+	cat temp/primeraP2.tmp >> temp/graficaP.tmp
+	echo -e "" >> temp/graficaP.tmp
+	echo -n "" > temp/porcentajeP.tmp
 	for((i=0;i<$npart;i++)){
-		echo -ne "\t|${proceso[${partocup[$i]}]}" >> graficaP.tmp
-		echo -ne "\t|${color[(${partocup[$i]} % 7)]} ${tamanew[${partocup[$i]}]}$blanco/${particiones[$i]}" >> porcentajeP.tmp
+		echo -ne "\t|${proceso[${partocup[$i]}]}" >> temp/graficaP.tmp
+		echo -ne "\t|${color[(${partocup[$i]} % 7)]} ${tamanew[${partocup[$i]}]}$blanco/${particiones[$i]}" >> temp/porcentajeP.tmp
 	}
-	echo "	|" >> porcentajeP.tmp
-	echo "	|" >> graficaP.tmp
-	cat porcentajeP.tmp >> graficaP.tmp
-	cat ultimaP2.tmp >> graficaP.tmp
+	echo "	|" >> temp/porcentajeP.tmp
+	echo "	|" >> temp/graficaP.tmp
+	cat temp/porcentajeP.tmp >> temp/graficaP.tmp
+	cat temp/ultimaP2.tmp >> temp/graficaP.tmp
 
 
 	out=1
@@ -931,9 +872,9 @@ for ((t=0;t<=1000;++t)){
 		if [ $proAct -eq 0 ]
 		then
 			
-			echo -n "▇▇▇" >> lineal.tmp
-			echo -ne "   " >> nombreL.tmp
-			echo -ne "  " >> tiempoL.tmp
+			echo -n "▇▇▇" >> temp/lineal.tmp
+			echo -ne "   " >> temp/nombreL.tmp
+			echo -ne "  " >> temp/tiempoL.tmp
 		else
 			if [ $t -lt 10 ]; then			
 			let tt=`expr 3*${tiempo[${proAct}]}-3`
@@ -943,25 +884,20 @@ for ((t=0;t<=1000;++t)){
 			let ttt=`expr 3*${tiempo[${proAct}]}-2`
 			fi
 			
-			echo -ne "${color[($proAct % 7)]}${proceso[$proAct]}$blanco" >> nombreL.tmp
+			echo -ne "${color[($proAct % 7)]}${proceso[$proAct]}$blanco" >> temp/nombreL.tmp
 			for((o=0;o<$tt;o++)){
-				echo -ne " " >> nombreL.tmp
+				echo -ne " " >> temp/nombreL.tmp
 			}	
-			echo -ne "${blanco}$t" >> tiempoL.tmp			
+			echo -ne "${blanco}$t" >> temp/tiempoL.tmp			
 			for((o=0;o<${tiempo[${proAct}]};o++)){
-				echo -ne "${color[($proAct % 7)]}▇▇▇" >> lineal.tmp
+				echo -ne "${color[($proAct % 7)]}▇▇▇" >> temp/lineal.tmp
 			}
 			for((o=0;o<$ttt;o++)){
-				echo -ne " " >> tiempoL.tmp
+				echo -ne " " >> temp/tiempoL.tmp
 			}
 			
 			
-	fi
-		
-		
-			
-		
-		
+	fi		
 	fi
 	anterior=$proAct
 	#Introducción de proceso que estaba en memoria a la cpu
@@ -972,27 +908,27 @@ for ((t=0;t<=1000;++t)){
 		out=0
 		hayEvento=1
 		estado[$proAct]=2
-		echo -e "\e[1;33mEl proceso ${proceso[$proAct]}\e[1;33m ha entrado en CPU.\e[0m" >> ejemplo.txt
+		echo -e "\e[1;33mEl proceso ${proceso[$proAct]}\e[1;33m ha entrado en CPU.\e[0m" >> temp/ejemplo.txt
 	fi
 
 	#Si el procesador está ocupado mostrar cuanto tiempo le queda al proceso en cuestión
 	if [ $cpus -eq 1 ]
 	then
 		cpu=`expr $cpu - 1`
-		echo "El procesador esta ocupado" >> ejemplo.txt
-		echo -e "\e[1;31mAl proceso ${proceso[$proAct]}\e[1;31m le quedan $cpu tiempos de ejecucion.\e[0m" >> ejemplo.txt  #si la cpu esta ocupada estara trabajando y reduciendo el tiempo de ejecucion 1 por cada paso de bucle
+		echo "El procesador esta ocupado" >> temp/ejemplo.txt
+		echo -e "\e[1;31mAl proceso ${proceso[$proAct]}\e[1;31m le quedan $cpu tiempos de ejecucion.\e[0m" >> temp/ejemplo.txt  #si la cpu esta ocupada estara trabajando y reduciendo el tiempo de ejecucion 1 por cada paso de bucle
 		#Dibujamos la gráfica
 		for ((i=1;i<=$npro;i++)){
 			if [ $i -eq $proAct ]
 			then
-				echo -ne "${color[($i % 7)]}▇▇▇$blanco" >> "${proceso[$i]}.tmp"
+				echo -ne "${color[($i % 7)]}▇▇▇$blanco" >> "temp/${proceso[$i]}.tmp"
 			else
-				echo -ne " " >> "${proceso[$i]}.tmp"
+				echo -ne " " >> "temp/${proceso[$i]}.tmp"
 			fi
 		}
 	else
 		for ((i=1;i<=$npro;i++)){
-			echo -ne " " >> "${proceso[$i]}.tmp"
+			echo -ne " " >> "temp/${proceso[$i]}.tmp"
 		}
 	fi
 
@@ -1018,28 +954,28 @@ for ((t=0;t<=1000;++t)){
 
 
 	#Crea la tabla de procesos
-	echo "" >> ejemplo.txt
-	echo -e "\t Tabla de procesos" >> ejemplo.txt
-	echo -e "\t${naranja}REF ${naranja}TLL ${naranja}TEJ ${naranja}MEM ${naranja}TESP ${naranja}TRET ${naranja}TREJ ${naranja}Estado" >> ejemplo.txt
+	echo "" >> temp/ejemplo.txt
+	echo -e "\t Tabla de procesos" >> temp/ejemplo.txt
+	echo -e "\t${naranja}REF ${naranja}TLL ${naranja}TEJ ${naranja}MEM ${naranja}TESP ${naranja}TRET ${naranja}TREJ ${naranja}Estado" >> temp/ejemplo.txt
 	
 	ejec=0
 	ress=0	
 	for ((i=1;i<=$npro;i++)){
-		echo -ne "\t${color[(i % 7)]}${proceso[$i]}"  >> ejemplo.txt
+		echo -ne "\t${color[(i % 7)]}${proceso[$i]}"  >> temp/ejemplo.txt
 		if [ ${llegada[$i]} -lt 10 ]; then 		
-		echo -ne " ${color[(i % 7)]}${llegada[$i]}  " >> ejemplo.txt
+		echo -ne " ${color[(i % 7)]}${llegada[$i]}  " >> temp/ejemplo.txt
 		else
-		echo -ne " ${color[(i % 7)]}${llegada[$i]} " >> ejemplo.txt
+		echo -ne " ${color[(i % 7)]}${llegada[$i]} " >> temp/ejemplo.txt
 		fi
 		if [ ${tiempo[$i]} -lt 10 ]; then 		
-		echo -ne " ${color[(i % 7)]}${tiempo[$i]}  " >> ejemplo.txt
+		echo -ne " ${color[(i % 7)]}${tiempo[$i]}  " >> temp/ejemplo.txt
 		else
-		echo -ne " ${color[(i % 7)]}${tiempo[$i]} " >> ejemplo.txt
+		echo -ne " ${color[(i % 7)]}${tiempo[$i]} " >> temp/ejemplo.txt
 		fi 
 		if [ ${tamanew[$i]} -lt 10 ]; then 		
-		echo -ne " ${color[(i % 7)]}${tamanew[$i]}  " >> ejemplo.txt
+		echo -ne " ${color[(i % 7)]}${tamanew[$i]}  " >> temp/ejemplo.txt
 		else
-		echo -ne " ${color[(i % 7)]}${tamanew[$i]} " >> ejemplo.txt
+		echo -ne " ${color[(i % 7)]}${tamanew[$i]} " >> temp/ejemplo.txt
 		fi   
      		
 		if [ ${estado[$i]} -eq 0 ]; then
@@ -1053,25 +989,25 @@ for ((t=0;t<=1000;++t)){
 		tRes=${tRestante[$i]}
 		if [ ${guion[$i]} -eq 1 ]
 		then
-			echo -ne "  -  " >> ejemplo.txt
-			echo -ne "  -  " >> ejemplo.txt
-			echo -ne "  -  " >> ejemplo.txt
+			echo -ne "  -  " >> temp/ejemplo.txt
+			echo -ne "  -  " >> temp/ejemplo.txt
+			echo -ne "  -  " >> temp/ejemplo.txt
 			
 		else
 			if [ $tRet -lt 10 ]; then
-				echo -ne "  ${color[(i % 7)]}$tEsp  " >> ejemplo.txt
+				echo -ne "  ${color[(i % 7)]}$tEsp  " >> temp/ejemplo.txt
 			else 	
-				echo -ne "  ${color[(i % 7)]}$tEsp " >> ejemplo.txt
+				echo -ne "  ${color[(i % 7)]}$tEsp " >> temp/ejemplo.txt
 			fi
 			if [ $tEsp -lt 10 ]; then
-				echo -ne "  ${color[(i % 7)]}$tRet  " >> ejemplo.txt
+				echo -ne "  ${color[(i % 7)]}$tRet  " >> temp/ejemplo.txt
 			else 	
-				echo -ne "  ${color[(i % 7)]}$tRet " >> ejemplo.txt
+				echo -ne "  ${color[(i % 7)]}$tRet " >> temp/ejemplo.txt
 			fi
 			if [ $tRes -lt 10 ]; then
-				echo -ne "  ${color[(i % 7)]}$tRes  " >> ejemplo.txt
+				echo -ne "  ${color[(i % 7)]}$tRes  " >> temp/ejemplo.txt
 			else 	
-				echo -ne "  ${color[(i % 7)]}$tRes " >> ejemplo.txt
+				echo -ne "  ${color[(i % 7)]}$tRes " >> temp/ejemplo.txt
 			fi
 	
 		fi
@@ -1080,13 +1016,13 @@ for ((t=0;t<=1000;++t)){
 		then
 			if [ $t -ge ${llegada[$i]} ]
 			then
-				echo -ne " ${color[(i % 7)]}En espera" >> ejemplo.txt
+				echo -ne " ${color[(i % 7)]}En espera" >> temp/ejemplo.txt
 				tRetorno[$i]=`expr ${tRetorno[$i]} + 1`
 				guion[$i]=1
 				
 				
 			else
-				echo -ne " ${color[(i % 7)]}Fuera del sistema" >> ejemplo.txt
+				echo -ne " ${color[(i % 7)]}Fuera del sistema" >> temp/ejemplo.txt
 				guion[$i]=1
 				
 				
@@ -1094,7 +1030,7 @@ for ((t=0;t<=1000;++t)){
 		elif [ ${estado[$i]} -eq 1 ]
 		then
 			guion[$i]=0			
-			echo -ne " ${color[(i % 7)]}En memoria" >> ejemplo.txt
+			echo -ne " ${color[(i % 7)]}En memoria" >> temp/ejemplo.txt
 			tRetorno[$i]=`expr ${tRetorno[$i]} + 1`
 			
 			ress[$i]=0
@@ -1102,7 +1038,7 @@ for ((t=0;t<=1000;++t)){
 		elif [ ${estado[$i]} -eq 2 ]
 		then
 			guion[$i]=0
-			echo -ne " ${color[(i % 7)]}En ejecución" >> ejemplo.txt
+			echo -ne " ${color[(i % 7)]}En ejecución" >> temp/ejemplo.txt
 			ejec=1
 			ress[$i]=0
 			tRestante[$i]=`expr ${tRestante[$i]} - 1`			
@@ -1111,7 +1047,7 @@ for ((t=0;t<=1000;++t)){
 		else
 			if [ $i -eq $proAnt ]
 			then
-				echo -ne " ${color[(i % 7)]}En ejecución " >> ejemplo.txt
+				echo -ne " ${color[(i % 7)]}En ejecución " >> temp/ejemplo.txt
 				ejec=1
 				ress[$i]=0
 				tRetorno[$i]=`expr ${tRetorno[$i]} + 1`
@@ -1121,7 +1057,7 @@ for ((t=0;t<=1000;++t)){
 				if [ ${tRestante[$i]} -ne 0 ]; then
 					tRestante[$i]=`expr ${tRestante[$i]} - 1`
 				fi				
-				echo -ne " ${color[(i % 7)]}Terminado" >> ejemplo.txt
+				echo -ne " ${color[(i % 7)]}Terminado" >> temp/ejemplo.txt
 				tRestante="/"
 				
 				
@@ -1143,7 +1079,7 @@ for ((t=0;t<=1000;++t)){
 			fi
 		fi
 		
-		echo -e "\t\t" >> ejemplo.txt
+		echo -e "\t\t" >> temp/ejemplo.txt
 		
 		
 		ejec=0
@@ -1159,40 +1095,40 @@ for ((t=0;t<=1000;++t)){
 	promedioMediaRetorno=$(echo "scale=2; $mediaRetorno / $npro"| bc)	
 	
 		
-	echo -en  "\tMedia de espera: ${blanco}$promedioMediaEspera\t  Media de retorno: ${blanco}$promedioMediaRetorno" >> ejemplo.txt
+	echo -en  "\tMedia de espera: ${blanco}$promedioMediaEspera\t  Media de retorno: ${blanco}$promedioMediaRetorno" >> temp/ejemplo.txt
 
-	echo -e "" >> ejemplo.txt
+	echo -e "" >> temp/ejemplo.txt
 	
 	
-	echo "	|" >> porcentajeP.tmp
-	cat graficaP.tmp >> ejemplo.txt
-	echo "" >> ejemplo.txt
+	echo "	|" >> temp/porcentajeP.tmp
+	cat temp/graficaP.tmp >> temp/ejemplo.txt
+	echo "" >> temp/ejemplo.txt
 	
-	cat nombreL.tmp >> ejemplo.txt
-	echo "" >> ejemplo.txt
+	cat temp/nombreL.tmp >> temp/ejemplo.txt
+	echo "" >> temp/ejemplo.txt
 	
-	cat lineal.tmp >> ejemplo.txt
+	cat temp/lineal.tmp >> temp/ejemplo.txt
 	
-	echo "" >> ejemplo.txt
-	cat tiempoL.tmp >> ejemplo.txt
+	echo "" >> temp/ejemplo.txt
+	cat temp/tiempoL.tmp >> temp/ejemplo.txt
 
 
-	echo "" >> ejemplo.txt
-	echo "-------------------------------------------------------------------------------------" >> ejemplo.txt
-	echo "" >> ejemplo.txt
+	echo "" >> temp/ejemplo.txt
+	echo "-------------------------------------------------------------------------------------" >> temp/ejemplo.txt
+	echo "" >> temp/ejemplo.txt
 
 	if [ $evento -eq 1 ]
 	then
 		if [ "$hayEvento" -eq 1 ]
 		then
-			cat ejemplo.txt >> informe.txt
+			cat temp/ejemplo.txt >>  output/informe.txt
 			clear
-			cat informe.txt
+			cat  output/informe.txt
 		fi
 	else
 		clear
-		cat ejemplo.txt >> informe.txt
-		cat informe.txt
+		cat temp/ejemplo.txt >>  output/informe.txt
+		cat  output/informe.txt
 	fi
 	finalYa=0
 	if [ $final -eq 0 ]
@@ -1211,36 +1147,36 @@ for ((t=0;t<=1000;++t)){
 	if [ $finalYa -eq 1 ]				#Si se acaban los procesos por ejectuar se sale del bucle.
 	then #Juntamos todos los archivos temporales para hacer la gráfica
 		for ((i=1;i<=$npro;i++)){
-			echo -e "" >> "${proceso[$i]}.tmp"
+			echo -e "" >> "temp/${proceso[$i]}.tmp"
 		}
 		
 		
 			
 		
-		echo "" >> cabecera.tmp
-		cat cabecera.tmp > grafica.tmp
+		echo "" >> temp/cabecera.tmp
+		cat temp/cabecera.tmp > temp/grafica.tmp
 		
 		
 		for ((i=1;i<=$npro;i++)){
-			cat "${proceso[$i]}.tmp" >> grafica.tmp
+			cat "temp/${proceso[$i]}.tmp" >> temp/grafica.tmp
 		}
 		
-		#~ cat graficaP.tmp >> grafica.tmp
+		#~ cat temp/graficaP.tmp >> temp/grafica.tmp
 		#Dibujamos gráfica lineal
 		
-		echo "|" >> lineal.tmp
-		echo "" >> grafica.tmp
-		echo -e "	  ${naranja}Gráfica Lineal${blanco} " >> grafica.tmp
-		cat nombreL.tmp >> grafica.tmp
-		echo "" >> grafica.tmp
+		echo "|" >> temp/lineal.tmp
+		echo "" >> temp/grafica.tmp
+		echo -e "	  ${naranja}Gráfica Lineal${blanco} " >> temp/grafica.tmp
+		cat temp/nombreL.tmp >> temp/grafica.tmp
+		echo "" >> temp/grafica.tmp
 		
-		cat lineal.tmp >> grafica.tmp
+		cat temp/lineal.tmp >> temp/grafica.tmp
 		
-		cat tiempoL.tmp >> grafica.tmp
-		echo -e "\n" >> grafica.tmp
-		cat ejemplo.txt >> informe.txt
+		cat temp/tiempoL.tmp >> temp/grafica.tmp
+		echo -e "\n" >> temp/grafica.tmp
+		cat temp/ejemplo.txt >>  output/informe.txt
 		clear
-		cat informe.txt
+		cat  output/informe.txt
 		break
 	fi
 
@@ -1261,12 +1197,11 @@ for ((t=0;t<=1000;++t)){
 }
 
 
-cat grafica.tmp > grafica.txt
+cat temp/grafica.tmp > output/grafica.txt
+rm temp/*.tmp
 rm *.tmp
+rm -rf temp
+cat  output/informe.txt | sed -r "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[m|K]//g" >> output/informeblanco.txt 
 
-cat informe.txt | sed -r "s/\x1B\[([0-9]{1,2}(;[0-9]{1,2})?)?[m|K]//g" >> informeblanco.txt 
-rm terminal.txt
-rm ejemplo.txt
-rm informeSJF.txt
 echo "Fin  del script. Pulsa enter para finalizar..."
 read fin

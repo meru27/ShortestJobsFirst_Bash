@@ -1,4 +1,3 @@
-10,15,5,
 Tiempo_de_llegada,tiempo_de_ejecucion,tamaño_en_memoria
 3,3,11
 4,2,9
