@@ -1,2 +1,0 @@
-
-El numero de particiones es 3
